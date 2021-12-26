@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-no-target-blank */
 import { FC } from "react";
-import styles from "./Footer.module.scss";
 
 export const Footer: FC = () => {
   return (
-    <footer className={styles.container}>
-      <span>  © 2021 JACK KREBSBACH</span>
-      <div className={styles.links}>
+    <footer className="w-full flex justify-between items-center p-5">
+      <span className="hover:text-cyan-400 text-sm">© 2021 JACK KREBSBACH</span>
+      <div className="space-x-5">
         <a href="https://github.com/jackkrebsbach" target="_blank">
           <i className="fab fa-github" />
         </a>

@@ -1,5 +1,4 @@
 import { FC } from "react";
-import styles from "./Input.module.scss";
 
 interface Props {
   name: string;
@@ -11,22 +10,28 @@ interface Props {
 export const Input: FC<Props> = ({ name, value, setValue, textarea }) => {
   if (textarea) {
     return (
-      <div className={styles.container}>
-        <label htmlFor={name}>{name}</label>
+      <div className="flex flex-col w-full pt-3">
+        <label className="font-bold" htmlFor={name}>
+          {name}
+        </label>
         <textarea
           name={name}
           id="name"
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          className="rounded-lg bg-zinc-800 py-2"
         />
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <label htmlFor={name}>{name}</label>
+    <div className="flex flex-col w-full pt-3">
+      <label className="font-bold" htmlFor={name}>
+        {name}
+      </label>
       <input
+        className="rounded-lg bg-zinc-800 py-2 px-4"
         name={name}
         id="name"
         type="text"

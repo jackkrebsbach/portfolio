@@ -2,7 +2,6 @@ import React, { Children } from "react";
 import { useRouter } from "next/router";
 import cx from "classnames";
 import Link, { LinkProps } from "next/link";
-import styles from "./NavLink.module.scss";
 
 type NavLinkProps = React.PropsWithChildren<LinkProps> & {
   activeClassName?: string;
@@ -10,7 +9,7 @@ type NavLinkProps = React.PropsWithChildren<LinkProps> & {
 
 export const NavLink = ({
   children,
-  activeClassName = styles.active,
+  activeClassName = "text-cyan-400",
   ...props
 }: NavLinkProps) => {
   const { asPath } = useRouter();
