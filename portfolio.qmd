@@ -3,17 +3,16 @@ title: "Portfolio"
 author: "Jack Krebsbach"
 ---
 
-## About 
+## About
 
-My name is Jack Krebsbach and I currently study Mathematics with a concentration in Statistics at Hope College in Holland, MI. I use data analysis and statistical learning methods to solve problems. I also enjoy learning about software development. 
+My name is Jack Krebsbach and I currently study Mathematics with a concentration in Statistics at Hope College in Holland, MI. I use data analysis and statistical learning methods to solve problems. I also enjoy learning about software development.
 
 ## Projects
 
-- Modeling Surface Composition of Lake Michigan Sand Dunes
-- Spotify song data analysis: Classifying song genre and predicting song popularity.
-- Predicting sales conversion from user data
-- PCA Analysis of Lake Michigan Sand Dunes
-
+-   Modeling Surface Composition of Lake Michigan Sand Dunes
+-   Spotify song data analysis: Classifying song genre and predicting song popularity.
+-   Predicting sales conversion from user data
+-   PCA Analysis of Lake Michigan Sand Dunes
 
 ```{r, warning=FALSE, echo=FALSE}
 library(tidymodels)
@@ -22,14 +21,10 @@ library(tidyverse)
 tidymodels_prefer()
 ```
 
-
-
 ```{python}
 import numpy as np
 import pymeanshift as pms
 ```
-
-
 
 
 

@@ -1,0 +1,8 @@
+numpy==1.26.3
+opencv-python==4.9.0.80
+pandas==2.1.4
+pymeanshift @ git+https://github.com/fjean/pymeanshift@1ba90da647342184ea7df378d7f21eba257a51d9
+python-dateutil==2.8.2
+pytz==2023.3.post1
+six==1.16.0
+tzdata==2023.4
