@@ -1,39 +1,41 @@
 ---
-title: "Portfolio"
+title: "Portfolio: Work in Progress!"
 author: "Jack Krebsbach"
-toc-depth: 2
 format:
   pdf:
     documentclass: article 
+    toc-depth: 2
     toc: true
     number-sections: true
     colorlinks: true
     geometry:
         - top=30mm
-        - left=1inch
-        - right=1inch
+        - left=30mm
+        - right=30mm
         - heightrounded
 ---
 
-
 \pagebreak
+
 # About
 
 I'm Jack Krebsbach, and I am currently pursuing a degree in Mathematics with a concentration in Statistics at Hope College in Holland, MI. I use data analysis and statistical learning methods to solve problems. I also enjoy learning about software development.
 
 
-\pagebreak
+**Work in Progress**
 
+\pagebreak
 # Projects
 
 
+**Work in Progress**
 This is my portfolio showcasing various machine learning, data science, and data analysis problems I have worked on over the years.
 
+## Sand dune modeling
 
-## Modeling surface composition of Lake Michigan sand dunes
+**Work in Progress**
+Modeling surface composition of Lake Michigan sand dunes
 
-
-What happens $\frac{2}{3}$ if I write this inline
 
 ```{r}
 #| echo: false
@@ -44,13 +46,16 @@ tidymodels_prefer()
 library(tidyverse)
 ```
 
-##  Spotify song data analysis: Classifying song genre and predicting song popularity
+## Spotify songs
 
+Spotify song data analysis: Classifying song genre and predicting song popularity
 
-## Predicting sales conversion from user data
+## Sales conversion
 
-## PCA Analysis of Lake Michigan Sand Dunes
+**Work in Progress**
+Predicting sales conversion from user data
 
+## PCA Analysis
 
-
-
+**Work in Progress**
+PCA Analysis of Lake Michigan Sand Dunes
