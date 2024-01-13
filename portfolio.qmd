@@ -5,7 +5,10 @@ author: "Jack Krebsbach"
 
 ## About
 
-My name is Jack Krebsbach and I currently study Mathematics with a concentration in Statistics at Hope College in Holland, MI. I use data analysis and statistical learning methods to solve problems. I also enjoy learning about software development.
+I'm Jack Krebsbach, and I'm currently pursuing a degree in Mathematics with a concentration in Statistics at Hope College in Holland, MI. I use data analysis and statistical learning methods to solve problems. I also enjoy learning about software development.
+
+
+This is my portfolio showcasing various machine learning, data science, and data analysis problems I have worked on over the years.
 
 ## Projects
 
@@ -14,23 +17,15 @@ My name is Jack Krebsbach and I currently study Mathematics with a concentration
 -   Predicting sales conversion from user data
 -   PCA Analysis of Lake Michigan Sand Dunes
 
-```{r, warning=FALSE, echo=FALSE}
+```{r}
+#| echo:false:
+#| 
+
 library(tidymodels)
 library(tidyverse)
 # To prefer functions from the tidymodels namespace
 tidymodels_prefer()
 ```
-
-```{python}
-import numpy as np
-import pymeanshift as pms
-```
-
-```{r}
-print('hello world')
-```
-
-
 
 
 
