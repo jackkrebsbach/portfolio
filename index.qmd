@@ -1,13 +1,17 @@
 ---
-title: "Portfolio: Work in Progress!"
+title: "Portfolio"
 author: "Jack Krebsbach"
+header-includes:
+ \usepackage{float}
 format:
   pdf:
+    fig-pos: "H"
     documentclass: article 
     toc-depth: 2
     toc: true
     number-sections: true
     colorlinks: true
+    whitespace: medium
     geometry:
         - top=30mm
         - left=30mm
@@ -15,26 +19,35 @@ format:
         - heightrounded
 ---
 
+\setcounter{secnumdepth}{1}
+
 \pagebreak
 
 # About
 
-I'm Jack Krebsbach, and I am currently pursuing a degree in Mathematics with a concentration in Statistics at Hope College in Holland, MI. I use data analysis and statistical learning methods to solve problems. I also enjoy learning about software development.
+![](images/headshot.png){width="20%" fig-align="center"}
 
-
-**Work in Progress**
+My name is Jack Krebsbach, and I am currently pursuing a degree in Mathematics with a concentration in Statistics at Hope College in Holland, MI. I use data analysis and statistical learning methods to solve problems. I also enjoy learning about software development.
 
 \pagebreak
-# Projects
+
+# Sand dune modeling
+
+## Overview
+
+Active coastal sand dunes are dynamic environments impacted by interactions between plant populations, topography changes, and physical processes. Using machine learning and photography both from the ground and from the air (using a drone), our group developed a method to map vegetation density at high resolution across an entire dune complex. By comparing maps across time we hope to better understand the interactions between sand dune activity and Marram grass population growth and spread.
+
+## Close-up photography
+
+First, an XGBoost model was trained to classify pixels in ground-based images as dead vegetation, live grass, or sand. We used the resulting classifier, which achieved an overall accuracy of 96%, to create \~200 coverage estimates for square regions on the ground (45 cm by 45 cm) at various locations within the dune complex.
 
 
-**Work in Progress**
-This is my portfolio showcasing various machine learning, data science, and data analysis problems I have worked on over the years.
+## Multinomial Regression Model
 
-## Sand dune modeling
+Each of these regions, which included thousands of pixels in the ground-based images, were covered by \~50 pixels in the coarser multispectral drone imagery. The multispectral photographs included red, green, blue, near infrared, and red edge bands. Additional features were constructed from these bands, including the Normalized Difference Vegetation Index (NDVI), which can contrast healthy live vegetation from the ground.
 
-**Work in Progress**
-Modeling surface composition of Lake Michigan sand dunes
+We used the feature images and original coverage estimates from the ground based images to train a regularized multinomial regression model. The trained model, which predicts surface composition using drone imagery, was used to create an orthomosaic map of vegetation coverage spanning the entire dune complex.
+
 
 
 ```{r}
@@ -46,16 +59,233 @@ tidymodels_prefer()
 library(tidyverse)
 ```
 
-## Spotify songs
 
-Spotify song data analysis: Classifying song genre and predicting song popularity
 
-## Sales conversion
+\pagebreak
 
-**Work in Progress**
-Predicting sales conversion from user data
+# Spotify songs analysis
 
-## PCA Analysis
+## Overview
 
-**Work in Progress**
-PCA Analysis of Lake Michigan Sand Dunes
+This project used a data set of nearly 30,000 songs from Spotify, focusing on two main problems: one regression and one classification. By analyzing this data set, we aimed to uncover patterns and relationships within these music samples. The classification problem explored the factors of genre determination, leveraging the audio features provided by Spotify.
+
+### Importance and Specific Questions
+
+Efficient genre classification aids in better music recommendation and library organization. Could songs be accurately classified into specific genres based on their audio features?
+
+## Data Set
+
+Source: Kaggle/Spotify API (Nearly 30,000 Songs)
+
+Observations and Predictors: The data set included over 1,000 observations with numerous predictors, such as danceability, energy, key, loudness, and tempo.
+
+Spotify song data analysis: Classified song genre and predicted song popularity.
+
+To get to know the data first we plot the first two principal components. Generally the data are scattered across classes. EDM seems to be the most clustered class when plotted on the first two principal components.
+
+
+From the scatter plot there is not any clear correlation between the predictors. Livelness, acoustic- ness, and speechiness appear to be skewed to the right, while most of the predictors have a normal distribution.
+The only correlation we see is between energy and loudness, which makes sense from the description of how these two variables were computed.
+
+::: {#fig-major layout-ncol="2" fig-align="center"}
+![First Two PCA Components](data/spotify/output.png){width=200px fig-align=center}
+
+
+![Scatter Plot](data/spotify/scatter matrix.png){width=200px fig-align=center}
+:::
+
+## Objective 
+
+We explored various machine learning models and their ability to correctly classify a songs genre based off of it's attributes.
+
+
+## K-Nearest Neighbors
+
+### Tuning the KNN Model
+
+We tuned the KNN to find the optimal K from 1 to 40 where. After about 20 nearest neighbors there is marginal improvement in the training error. The test error holds constant after approximately 25 neighbors. It looks like the best that the KNN classifier can do is around 25%.
+
+
+- Tried through 1 through ~50 Nearest Neighbors
+- Sharp drop in training accuracy after a few Nearest Neighbors
+- Using k>20 is reasonable
+
+
+![Train Test Error of KNN Model](data/spotify/training-testing-error-Knn.png){width=200px}
+
+## Linear Discrimminant Analysis
+
+Then we fitted a linear discriminant classifier to classify the song genres. There were no hyperparameters to tune. From the confusion matrix, the LDA classifier had the best accuracy when classifying EDM music (65%). This made sense, as the EDM songs were most clustered compared to other classes in the plot against the first two principal components.
+
+- Overall test accuracy 47%
+- EDM genre has highest test accuracy: 65%
+
+
+
+::: {#fig-lda layout-ncol="2" fig-align="center"}
+![Confusion matrix for the LDA Classifier](data/spotify/confusion matrix LDA.png){width=200px}
+
+
+
+![LDA decision boundary of first two principal components](data/spotify/lda-pca-boundary.png){width=200px}
+::: 
+
+
+## Random Forest
+
+We used Random Forest to classify the songs. With K-fold cross-validation, we tuned the number of estimators, the max_features used at each split, the max depth of each tree, and the minimum samples in each leaf. We used 5 folds over the grid. Random Forest performed better than the KNN classifier, which had an accuracy of around 25.1%, improving to get an accuracy score of around 54.7% on the test set. The most important feature was speechiness. However, danceability and tempo were nearly just as important.
+
+
+The top three important features were speechiness (0.176049), danceability (0.15331), and tempo (0.152939).
+
+
+
+### Grid search random forest with two parameters
+
+The grid search for the best hyper-parameters consisted of the following gird:
+
+- N_estimators: 100,200, 500
+- Max_features: sqrt, log
+- Max_depth: 4, 5, 6, 7, 8
+- Min_samples_leaf: 1, 2, 4, 8, 10
+
+
+![Heat map of hyperparameters and accuracy on the test set](data/spotify/grid search RF.png){width=200px}
+
+
+## XGBoost
+
+XGBoost produced the highest accuracy on the test set with an accuracy of 57.4%. The feature importance scores were similar with speechiness being the most important feature.
+
+Feature Importance
+1. Speechiness   		0.17
+2. Danceability    		0.134
+3. Tempo          		0.129
+
+Hyper parameter tuning
+- 5 Fold cross validation
+- Best test error: 57.4%
+
+Grid Search
+- Max_depth: 3,2
+- N_estimators: 100
+- Learning rate: 0.2
+
+![Grid search heat map](data/spotify/grids.png){width=500px}
+
+
+
+## Conclusion
+
+Overall, the XGBoost classifier had the highest accuracy on the test set. We use k-fold cross validation with 5 folds over a grid of parameters. Best Model: XGBoost with the following hyperparamters. - Max Depth: 5 - Number of estimators: 300 - Learning rate: 0.1 - Test set accuracy: 57.4% Speechiness had the highest importance
+
+## References
+- Beach, Joe. Songs.” Kaggle, “30000 Spotify www.kaggle.com/datasets/joebeachcapital/30000-spotify-songs.
+- Seon Tae Kim, Joo Hee Oh, Music intelligence: Granular data and prediction of top ten hit songs, Decision Support Systems, Volume 145, 2021, 113535, ISSN 0167-9236, https://doi.org/10.1016/j.dss.2021.113535
+- Ramírez, J., Flores, M.J. Machine learning for music genre: multifaceted review and experimen- tation with audioset. J Intell Inf Syst 55, 469–499 (2020). https://doi.org/10.1007/s10844-019- 00582-9 Narkhede, Nandkishor & Mathur, Sumit & Bhaskar, Anand. (2022). Machine Learning Techniques for Music Genre Classification..
+
+\pagebreak
+
+# Student's ability to Detect a Repeated Word in a Sentence
+
+## Overview
+
+This study explored the association between gender (male or female) and the ability to identify an erroneously repeated word in a sentence without being prompted of its presence. It also investigated whether there was association between areas of study (STEM or Arts/Humanities) and duplicated word identification. Sixty-six students participated in a survey in a convenience sample with a prompt to read a sentence with a question (on the next page) asking which word, if any of them, was repeated. Statistical analysis was done comparing the difference of two proportions. It was found that there was no significant difference (p\>0.05) for both groups, gender and study area.
+
+## Introduction
+
+In the past research has been conducted on how humans cognitively process repeated words on a page while reading (Rayner, et al. 2011, Slattery & Yates 2018). Rayner’s 2011 study investigated how often people skip words using eye-tracking and varying word length and predictability. The results demonstrated that word predictability and word length have strong and independent influences on word skipping. Slattery & Yates study examined how spelling and reading levels predicted word skipping. They found that skipping probability could be significantly predicted by a spelling test. A reading test significantly predicted length of target word gaze, as better readers were less likely to rely on context.
+
+These studies as well as previous experience with the phenomenon inspired the research question at hand. Many readers, when presented with a sentence that contains a word repeated back to back, do not notice. Figure 1 shows a well known example of this. This study sought to delve further into this idea and answer the following questions. Does gender affect one’s ability to catch a repeated word in a sentence. In addition it was explored if academic areas of study affect one’s ability to catch a repeated word in a sentence.
+
+This experiment seeks to answer these questions. The group hypothesized that the same proportion of males and females would catch a repeated word in a sentence. It was also hypothesized that the same proportion of STEM majors and Arts/Humanities majors would catch a repeated word in a sentence.
+
+## Results
+
+### Stem vs Arts & Humanities
+
+Under simulation there was no statistically significant difference in proportion of stem students and art/humanities students that correctly identified the duplicated word (p\>0.05)
+
+
+::: {#fig-major layout-ncol="2"}
+![](data/stats/box-chart-major.png){#fig-box-chart-major}
+
+![](data/stats/simulation.png){#fig-simulation-major}
+
+Proportion of Stem and Non-Stem correctly identified the duplicated word (a), simulated null distribution under the assumption that there was no difference in proportions between two groups (b)
+:::
+
+
+
+| Parameter           | Value           |
+|---------------------|-----------------|
+| Observed Difference | 0.095           |
+| CI                  | (-0.139, 0.329) |
+: Observed difference in proportions and confidence interval of the true difference in proportions.
+
+
+
+### Male Vs. Female
+
+Under simulation there was no statistically significant difference in proportion of males of females that correctly identified the duplicated word (p>0.05)
+
+::: {#fig-gender layout-ncol="2"}
+![](data/stats/box-chart-gender.png){#fig-box-chart-gender}
+
+![](data/stats/simulation-gender.png){#fig-simulation-gender}
+
+Proportion of Male’s and Females that correctly identified the duplicated word in the sentence (a), simulated null distribution under the assumption that there was no difference in proportions between two groups (b). 
+:::
+
+| Parameter           | Value           |
+|---------------------|-----------------|
+| Observed Difference | 0.093           |
+| CI                  | ( -0.141,0.327) |
+: Observed difference in proportions and confidence interval of the true difference in proportions.
+
+
+## Conclusions
+
+There is insufficient statistical evidence to indicate an association between being male or female and being better at detecting a repeated word in a sentence (p = 0.5890). The same can be said about the association between STEM or Arts and Humanities and duplicated word detection (p = 0.5920). We are 95% confident that the difference between males and females detecting a repeated word is in the interval (-0.141, 0.327). Additionally, we are 95% confident that the difference between STEM majors and Arts and Humanities majors is in the interval ( -0.139,0.329).
+
+The study had several limitations, with the largest being the setting of the survey. It was impossible to control the setting that participants took the survey in. Thus, distraction while reading and answering questions is a definite factor. In the future, an experiment in a central, controlled environment would serve to eliminate distractions. This would also allow for directions to be clearly iterated to the participant with any possible questions being answered. Any questions that would come up during the survey could not be answered. Due to technological limitations it was not possible to ensure that participants did not return to the given sentence to reread the sentence and double check the answer. While the participants were asked not to do so, there is no way to check which answers were based on a valid first attempt or not. The wording of the question also could have impacted the ability to identify the duplicated word. In this study it was not explicitly stated that there was a duplicated word by mistake but rather it could be interpreted as any word that was duplicated in the sentence. A future experiment could use different wording to limit any ambiguousness. Another area for future work could investigate multiple sentence lengths, different words being repeated, no words being repeated, or split participants into different demographics.
+
+
+## References
+
+- Rayner, K., Slattery, T. J., Drieghe, D., & Liversedge, S. P. (2011). Eye movements and word skipping during reading: Effects of word length and predictability. Journal of Experimental Psychology: Human Perception and Performance, 37(2), 514–528. https://doi.org/10.1037/a0020990
+
+- Slattery, T. J., & Yates, M. (2018). Word skipping: Effects of word length, predictability, spelling and reading skill. Quarterly Journal of Experimental Psychology, 71(1), 250–259. doi:10.1080/17470218.2017.1310264
+
+
+\pagebreak
+
+# Selected Presentations
+
+Krebsbach, J., (Yurk, B. P., Mentor), Joint Mathematics Meeting, Talk, “Mapping Plant Populations Using Drones and Machine Learning”, San Francisco, CA. (January 4, 2024)
+
+Krebsbach, J., (Yurk, B. P., Mentor), 48th Annual Pi Mu Epsilon Conference, Talk, “Mapping Vegetation in Lake Michigan Dunes with XGBoost”, Miami, OH. (September 29, 2023)
+
+Krebsbach, J., Yurk, B. P., DeVries-Zimmerman, S. J., Pearson, P., Hansen, E. C. International Conference on Aeolian Research, Poster. “Mapping vegetation in Lake Michigan sand dunes using unoccupied aerial systems and machine learning,” Las Cruces, NM. (July 13, 2023)
+
+Krebsbach, J., Yurk, B. P. Mathfest, 2021, Talk, “Modeling Vegetation Density,” Online. (August, 5, 2021).
+
+Krebsbach, J. (Yurk, B. P., Mentor). Midstates Consortium for Math and Science Undergraduate Research Symposium, Talk, "Dunes & Drones: Using machine learning to map vegetation with drone- and ground-based photography," Online. (November 7, 2020).
+
+Krebsbach, J., Yurk, B. P. Joint Mathematics Meeting, Poster, "Mapping dune vegetation using drones, ground photography, and machine learning," Denver, CO. (January 17, 2020).
+
+Krebsbach, J., Yurk, B. P., Pearson, P. T., Stid, J., Hansen, E. C. Geological Society of America Annual Meeting, Poster, "Vegetation and Topography Mapping of Coastal Dune Complexes Using Small Unmanned Aerial Systems and Ground-Based Imagery,” Phoenix, AZ. (September 22, 2019).
+
+Krebsbach, J., (Yurk, B. P., Mentor), PME Mathfest, Talk, “Dunes and drones: A machine learning approach to mapping dune vegetation using small unmanned aerial systems and ground based photography, Cincinnati, OH. (August 1st, 2019)
+
+\pagebreak
+
+# Posters
+
+## Joint Mathematics Meeting Undergraduate Poster Session (2020)
+
+![JMM Poster](images/jmm.png)
+
+## Geological Society of America Annual Meeting (2019)
+
+![GSA Poster](images/gsa.png)
